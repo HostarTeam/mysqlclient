@@ -53,4 +53,4 @@ export class MySQLClient {
     }
 }
 
-export * from './typing/types';
+export * from './typing/types.js';

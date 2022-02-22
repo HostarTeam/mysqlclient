@@ -9,4 +9,4 @@ export declare class MySQLClient {
     getFirstQueryResult(sql: string, values?: valueParam): Promise<QueryRow>;
     executeQuery(sql: string, values?: valueParam): Promise<void>;
 }
-export * from './typing/types';
+export * from './typing/types.js';
