@@ -6,7 +6,7 @@ import {
 } from 'mysql2';
 import { QueryRow, valueParam } from './typing/types';
 
-class MySQLClient {
+export class MySQLClient {
     private connection!: Connection;
 
     constructor(private config: ConnectionOptions) {
@@ -53,4 +53,4 @@ class MySQLClient {
     }
 }
 
-export default MySQLClient;
+export * from './typing/types';
