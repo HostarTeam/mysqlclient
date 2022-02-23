@@ -13,7 +13,7 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "dev": "node --experimental-specifier-resolution=node --experimental-modules --no-warnings --loader ts-node/esm ./src/index.ts"
+        "dev": "./node_modules/.bin/ts-node src/index.ts"
     },
     "repository": {
         "type": "git",
@@ -25,6 +25,5 @@
     "bugs": {
         "url": "https://github.com/HostarTeam/mysqlclient/issues"
     },
-    "homepage": "https://github.com/HostarTeam/mysqlclient#readme",
-    "publishConfig": {}
+    "homepage": "https://github.com/HostarTeam/mysqlclient#readme"
 }
