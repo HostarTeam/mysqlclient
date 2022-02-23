@@ -107,3 +107,4 @@ export class MySQLClient {
 }
 
 export * from './typing/types.js';
+export { Connection, ConnectionOptions } from 'mysql2/typings/mysql';
