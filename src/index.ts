@@ -35,6 +35,10 @@ export class MySQLClient {
         });
     }
 
+    public destroyConnection(): void {
+        this.connection?.destroy();
+    }
+
     public getConnectionCallback(
         callback: (connection: Connection | null | undefined) => void
     ) {
