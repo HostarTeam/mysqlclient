@@ -1,21 +1,37 @@
+import { Connection, createConnection, RowDataPacket } from 'mysql2';
+import { ConnectionOptions } from 'mysql2/typings/mysql';
 import {
-    Connection,
-    ConnectionOptions,
-    createConnection,
-    RowDataPacket,
-} from 'mysql2';
-import { QueryRow, valueParam } from './typing/types';
+    ExtendedConnectionOptions,
+    QueryRow,
+    valueParam,
+} from './typing/types';
 
 export class MySQLClient {
     private connection: Connection | null | undefined;
+    private _defaultExtendedConfig: ExtendedConnectionOptions = {
+        assureConnected: false,
+        maxRetries: 10,
+    };
+    private config: ExtendedConnectionOptions;
 
-    constructor(private config: ConnectionOptions) {
-        this.config = config;
+    constructor(config: ExtendedConnectionOptions) {
+        this.config = { ...this._defaultExtendedConfig, ...config };
+    }
+
+    private get cleanConfig() {
+        const cloneConfig: Partial<ExtendedConnectionOptions> = {
+            ...this.config,
+        };
+        for (const key in this._defaultExtendedConfig) {
+            delete cloneConfig[key as keyof ExtendedConnectionOptions];
+        }
+
+        return cloneConfig;
     }
 
     public connect(): Promise<void> {
         return new Promise((resolve, reject) => {
-            const connection: Connection = createConnection(this.config);
+            const connection: Connection = createConnection(this.cleanConfig);
             connection.connect((err) => {
                 if (err) return reject(err);
 
@@ -72,7 +88,28 @@ export class MySQLClient {
         });
     }
 
-    public getQueryResult(
+    private async assertConnected(retry = 0): Promise<void> {
+        if (!(await this.isConnectedAsync())) {
+            if (retry < this.config!.maxRetries) {
+                await this.connect();
+                return await this.assertConnected(retry + 1);
+            } else {
+                throw new Error(
+                    `Could not connect to database after ${this.config.maxRetries} retries`
+                );
+            }
+        }
+    }
+
+    public async getQueryResult(
+        sql: string,
+        values: valueParam = []
+    ): Promise<QueryRow[]> {
+        if (this.config.assureConnected) await this.assertConnected();
+        return await this._getQueryResult(sql, values);
+    }
+
+    private _getQueryResult(
         sql: string,
         values: valueParam = []
     ): Promise<QueryRow[]> {
