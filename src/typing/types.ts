@@ -6,6 +6,6 @@ export interface QueryRow {
 }
 
 export interface ExtendedConnectionOptions extends ConnectionOptions {
-    assureConnected: boolean;
-    maxRetries: number;
+    assureConnected?: boolean;
+    maxRetries?: number;
 }

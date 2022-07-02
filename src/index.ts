@@ -90,7 +90,7 @@ export class MySQLClient {
 
     private async assertConnected(retry = 0): Promise<void> {
         if (!(await this.isConnectedAsync())) {
-            if (retry < this.config!.maxRetries) {
+            if (retry < (this.config!.maxRetries || 10)) {
                 await this.connect();
                 return await this.assertConnected(retry + 1);
             } else {
